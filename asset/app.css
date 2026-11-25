@@ -262,3 +262,5 @@ body.hasQ { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 52
 .walk .legR{transform-box:fill-box;transform-origin:50% 0;animation:legB .45s linear infinite}
 .walk .wave{animation:none}
 @media (prefers-reduced-motion: reduce) { .hScene *, .hBub { animation: none !important; transition: none !important; } }
+.orLine { display:flex; align-items:center; gap:10px; margin:12px 0 10px; color:var(--muted); font-size:12px; }
+.orLine::before,.orLine::after { content:''; flex:1; height:1px; background:var(--line); }

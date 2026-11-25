@@ -1,7 +1,7 @@
 // ====== Aplikasi HP Inventarisasi UPKL: login, tab, cari, progres, detail, pemindai ======
 // Memakai fungsi form (doLookup, setPetugas, esc, $ …) yang sudah dimuat di index.html.
 (function () {
-  const APP_VERSION = '1.4';
+  const APP_VERSION = '1.5';
   // indeks kolom data aset (lihat dataAset() di Code.gs)
   const C = 0, A = 1, S = 2, D = 3, L = 4, Q = 5, B = 6, CC = 7, T = 8, K = 9, QF = 10, P = 11, N = 12, U = 13, TP = 14, LC = 15;
   const LS = {
@@ -691,23 +691,23 @@
 
   // ---------- LOGIN ----------
   function showLogin(msg) { $('login').classList.remove('hidden'); $('loginMsg').textContent = msg || ''; $('pinIn').value = ''; setTimeout(() => $('pinIn').focus(), 100); }
-  async function doLogin() {
-    const pin = $('pinIn').value.trim(); if (!pin) { $('loginMsg').textContent = 'Isi NIP atau PIN tim dulu.'; return; }
-    $('btnLogin').disabled = true; $('loginMsg').className = 'msg'; $('loginMsg').textContent = 'Memeriksa…';
+  async function doLogin(tamu) {
+    const pin = tamu === true ? '__tamu__' : $('pinIn').value.trim(); if (!pin) { $('loginMsg').textContent = 'Isi NIP dulu, atau pilih Masuk sebagai Tamu.'; return; }
+    $('btnLogin').disabled = true; $('btnTamu').disabled = true; $('loginMsg').className = 'msg'; $('loginMsg').textContent = 'Memeriksa…';
     try {
       const r = await APP.call('infoApp', [], pin);
       LS.set('inv-pin', pin);
       $('login').classList.add('hidden');
       afterLogin(r);
     } catch (e) { $('loginMsg').className = 'msg err'; $('loginMsg').textContent = e.offline ? 'Tidak ada sinyal. Login pertama kali butuh internet.' : e.message; }
-    $('btnLogin').disabled = false;
+    $('btnLogin').disabled = false; $('btnTamu').disabled = false;
   }
   function afterLogin(r) {
     if (r && r.login) { LS.set('inv-login', JSON.stringify(r.login)); applyLogin(r.login); }
     if (r) LS.set('inv-info', JSON.stringify({ aiAktif: r.aiAktif, aiNama: r.aiNama, stikerHash: r.stikerHash || '' }));
     if (r && Array.isArray(r.pegawai)) {
       LS.set('inv-peg', JSON.stringify(r.pegawai));
-      pegawai = r.pegawai;
+      pegawai = window.APP_TAMU ? [] : r.pegawai;
       if (petugasNama && pegawai.length) {
         const hit = pegawai.find(p => normNama(p[0]) === normNama(petugasNama));
         if (hit) setPetugas(hit[0], false); else if (!petugasNon) setPetugas('');
@@ -725,11 +725,17 @@
     const nip = loginInfo && loginInfo.mode === 'nip';
     if (nip) setPetugas(loginInfo.nama, false);
     $('btnGantiNama').classList.toggle('hidden', nip);
-    $('akunInfo').innerHTML = nip ? '<span class="lockTag">🔒 Login NIP</span> ' + esc(loginInfo.jabatan || '') : 'Perangkat: app-' + esc(APP.device()) + ' · login PIN tim';
+    const tamu = loginInfo && loginInfo.mode === 'tamu';
+    window.APP_TAMU = !!tamu;
+    if (tamu) pegawai = [];   // tamu hanya bisa menulis nama sendiri
+    if (tamu && petugasNama && !petugasNon) setPetugas('');   // tamu tidak boleh memakai nama pegawai dari daftar
+    $('akunInfo').innerHTML = nip ? '<span class="lockTag">🔒 Login NIP</span> ' + esc(loginInfo.jabatan || '')
+      : '<span class="lockTag">👤 Tamu</span> perangkat app-' + esc(APP.device()) + ' · ketik nama Anda lalu pilih "Pakai …"';
   }
-  APP.onPinInvalid = () => { LS.del('inv-pin'); LS.del('inv-login'); applyLogin(null); showLogin('PIN/NIP tidak berlaku lagi. Masukkan NIP atau PIN tim terbaru.'); };
-  $('btnLogin').addEventListener('click', doLogin);
-  $('pinIn').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  APP.onPinInvalid = () => { LS.del('inv-pin'); LS.del('inv-login'); applyLogin(null); showLogin('Login sudah tidak berlaku. Masukkan NIP, atau pilih Masuk sebagai Tamu.'); };
+  $('btnLogin').addEventListener('click', () => doLogin(false));
+  $('btnTamu').addEventListener('click', () => doLogin(true));
+  $('pinIn').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(false); });
 
   // ---------- menu ----------
   $('btnMenu').addEventListener('click', e => {

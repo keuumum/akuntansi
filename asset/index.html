@@ -15,8 +15,8 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="config.js?v=1.4.11251109"></script>
-<script src="api.js?v=1.4.11251109"></script>
+<script src="config.js?v=1.5.11260642"></script>
+<script src="api.js?v=1.5.11260642"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
@@ -75,7 +75,7 @@
   .aclist div.acNon { background:rgba(232,164,0,.08); }
   a { color:var(--brand); }
 </style>
-<link rel="stylesheet" href="app.css?v=1.4.11251109">
+<link rel="stylesheet" href="app.css?v=1.5.11260642">
 </head>
 <body>
 <header class="appbar">
@@ -152,7 +152,7 @@
   </div>
 </div>
 
-<div class="hint foot">app v1.4 - © Han with Claude🤖✨</div>
+<div class="hint foot">app v1.5 - © Han with Claude🤖✨</div>
 </main>
 <!-- ===== HOME ===== -->
 <main id="viewHome" class="view hidden">
@@ -250,7 +250,7 @@
     <div class="hLastHead"><span class="hand">Terakhir dilihat</span><button type="button" id="hAll" class="lnk">Lihat semua</button></div>
     <div id="hRecent" class="list"></div>
   </section>
-  <div class="hint foot">app v1.4 - © Han with Claude🤖✨</div>
+  <div class="hint foot">app v1.5 - © Han with Claude🤖✨</div>
 </main>
 
 <!-- ===== TAB ATTB ===== -->
@@ -372,14 +372,16 @@
     <img class="logo" src="icon-192.png" alt="">
     <h2>Inventarisasi Aset 2026</h2>
     <p>PT PLN (Persero) UPK Lombok</p>
-    <input id="pinIn" type="text" placeholder="NIP atau PIN tim" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go">
+    <input id="pinIn" type="text" placeholder="NIP pegawai" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go">
     <button id="btnLogin" class="full" type="button">Masuk</button>
+    <div class="orLine"><span>atau</span></div>
+    <button id="btnTamu" class="sec full" type="button" style="margin-top:0">👤 Masuk sebagai Tamu</button>
     <div id="loginMsg" class="msg err"></div>
     <div class="instWrap hidden" id="lInstall" style="margin-top:14px">
       <div class="instBar"><div><b>Pasang aplikasi di HP</b><small class="instTxt">Buka lebih cepat dari layar utama.</small></div>
       <button type="button" class="instBtn">Pasang</button></div>
     </div>
-    <div class="hint" style="margin-top:18px">Pegawai: masukkan <b>NIP</b> Anda (nama terisi otomatis).<br>Non-pegawai: pakai PIN tim dari admin KU UPKL.<br>Cukup sekali di HP ini.</div>
+    <div class="hint" style="margin-top:18px">Pegawai: masukkan <b>NIP</b> Anda (nama terisi otomatis).<br>Bukan pegawai: pilih <b>Masuk sebagai Tamu</b>, lalu tulis nama Anda.<br>Cukup sekali di HP ini.</div>
   </div>
   </div>
 </div>
@@ -522,7 +524,7 @@
     });
     $('btnGantiNama').addEventListener('click', () => { setPetugas(''); $('petugas').value = ''; $('petugas').focus(); });
     google.script.run.withSuccessHandler(list => {
-      pegawai = Array.isArray(list) ? list : [];
+      pegawai = window.APP_TAMU ? [] : (Array.isArray(list) ? list : []);
       if (petugasNama && pegawai.length) {
         const hit = pegawai.find(p => normNama(p[0]) === normNama(petugasNama));
         if (hit) setPetugas(hit[0], false);                 // (juga bila tadinya non-pegawai tapi kini ada di daftar)
@@ -1232,6 +1234,6 @@ window.addEventListener('load',function(){ window.Html5Qrcode ? start() : msg('L
   $('btnFind').addEventListener('click', doLookup);
   $('code').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doLookup(); } });
 </script>
-<script src="app.js?v=1.4.11251109"></script>
+<script src="app.js?v=1.5.11260642"></script>
 </body>
 </html>
