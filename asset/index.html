@@ -13,8 +13,10 @@
 <meta name="apple-mobile-web-app-title" content="Inven UPKL">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script src="config.js?v=1.2.11250858"></script>
-<script src="api.js?v=1.2.11250858"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="config.js?v=1.3.11250934"></script>
+<script src="api.js?v=1.3.11250934"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
@@ -73,12 +75,12 @@
   .aclist div.acNon { background:rgba(232,164,0,.08); }
   a { color:var(--brand); }
 </style>
-<link rel="stylesheet" href="app.css?v=1.2.11250858">
+<link rel="stylesheet" href="app.css?v=1.3.11250934">
 </head>
 <body>
 <header class="appbar">
   <img src="icon-192.png" alt="">
-  <div class="t"><b>Inventarisasi Aset 2026</b><small>PLN UPK Lombok</small></div>
+  <div class="t"><b>Aset UPKL</b><small>PLN UPK Lombok</small></div>
   <button id="btnRefresh" type="button" aria-label="Muat ulang data">⟳</button>
   <button id="btnMenu" type="button" aria-label="Menu">⋮</button>
 </header>
@@ -150,7 +152,45 @@
   </div>
 </div>
 
-<div class="hint foot">app v1.2 - © Han with Claude🤖✨</div>
+<div class="hint foot">app v1.3 - © Han with Claude🤖✨</div>
+</main>
+<!-- ===== HOME ===== -->
+<main id="viewHome" class="view hidden">
+  <section class="hGreet">
+    <div class="hHi" id="hHi">Selamat datang,</div>
+    <div class="hName" id="hName">Petugas Inventaris</div>
+    <div class="hSearch">
+      <button id="hCari" type="button" class="hBox"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5b6470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Cari kode, nama aset, lokasi…</span></button>
+      <button id="hScan" type="button" class="hScan" aria-label="Scan barcode untuk lihat detail aset"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a2f00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7V4h3M17 4h3v3M20 17v3h-3M7 20H4v-3M7 8v8M10 8v8M13 8v8M17 8v8"/></svg></button>
+    </div>
+  </section>
+  <section class="hHero" id="hHero">
+    <div class="hSlides" id="hSlides"></div>
+    <button type="button" class="chalk cBank" data-go="cari"><b>BANK DATA</b><b class="y">ASET UPKL</b><small id="hJml">aset · lokasi</small></button>
+    <button type="button" class="chalk cAttb" data-go="attb"><b>ATTB</b></button>
+    <svg class="arw a1" width="70" height="40" viewBox="0 0 70 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M4 30 C 25 34, 45 26, 62 10"/><path d="M50 9 L63 9 L61 22"/></svg>
+    <button type="button" class="chalk cInven" data-go="inven"><b class="y">INVEN 2026</b><span>scan &amp; foto di sini</span></button>
+    <svg class="arw a2" width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="#ffd400" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M62 52 C 50 25, 34 14, 8 12"/><path d="M19 4 L7 12 L18 22"/></svg>
+    <button type="button" class="chalk cPct" data-go="progres"><span>sudah diinven</span><b class="y" id="hPct">–%</b></button>
+    <div class="hDots" id="hDots"></div>
+  </section>
+  <section class="wrap hLast">
+    <div class="hLastHead"><span class="hand">Terakhir dilihat</span><button type="button" id="hAll" class="lnk">Lihat semua</button></div>
+    <div id="hRecent" class="list"></div>
+  </section>
+  <div class="hint foot">app v1.3 - © Han with Claude🤖✨</div>
+</main>
+
+<!-- ===== TAB ATTB ===== -->
+<main id="viewAttb" class="view hidden">
+<div class="wrap">
+  <div class="card soon">
+    <div class="hand big">Aset ATTB</div>
+    <div class="hand sub">segera dibangun</div>
+    <div class="h3" style="margin-top:12px">Isi yang direncanakan</div>
+    <ul><li>Daftar aset ATTB per lokasi</li><li>Status &amp; kondisi terakhir</li><li>Foto &amp; riwayat</li></ul>
+  </div>
+</div>
 </main>
 <!-- ===== TAB CARI ===== -->
 <main id="viewCari" class="view hidden">
@@ -188,9 +228,11 @@
 
 <!-- ===== NAVIGASI BAWAH ===== -->
 <nav class="nav" id="nav">
-  <button type="button" data-v="inven" class="on"><span>📝</span>Inven</button>
-  <button type="button" data-v="cari"><span>🔍</span>Cari aset</button>
-  <button type="button" data-v="progres"><span>📊</span>Progres</button>
+  <button type="button" data-v="home" class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9H4z"/><path d="M10 20v-6h4v6"/></svg>Home</button>
+  <button type="button" data-v="cari"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>Bank Data</button>
+  <button type="button" data-v="attb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v13H4z"/><path d="M9 7V4h6v3M9 12h6"/></svg>ATTB</button>
+  <button type="button" data-v="inven"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7V4h3M17 4h3v3M20 17v3h-3M7 20H4v-3M7 8v8M10 8v8M13 8v8M17 8v8"/></svg>Inven 26</button>
+  <button type="button" data-v="progres"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg>Progres</button>
 </nav>
 
 <!-- ===== DETAIL ASET ===== -->
@@ -282,6 +324,12 @@
 
 <div id="menu" class="hidden">
   <div class="ab" id="aboutTxt"></div>
+  <div class="ab" style="font-weight:700;color:var(--text)">Fitur lain <span style="font-weight:400">(segera)</span></div>
+  <button type="button" class="soonBtn">🏷️ Cetak stiker</button>
+  <button type="button" class="soonBtn">📍 Lapor temuan</button>
+  <button type="button" class="soonBtn">🔁 Mutasi lokasi</button>
+  <button type="button" class="soonBtn">🗺️ Peta aset</button>
+  <button type="button" class="soonBtn">✅ Tugas saya</button>
   <button id="mReload" type="button">⟳ Muat ulang data</button>
   <button id="mQueue" type="button">📤 Antrian offline</button>
   <button id="mInstall" type="button" class="hidden">📲 Pasang di layar utama</button>
@@ -1098,6 +1146,6 @@ window.addEventListener('load',function(){ window.Html5Qrcode ? start() : msg('L
   $('btnFind').addEventListener('click', doLookup);
   $('code').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doLookup(); } });
 </script>
-<script src="app.js?v=1.2.11250858"></script>
+<script src="app.js?v=1.3.11250934"></script>
 </body>
 </html>

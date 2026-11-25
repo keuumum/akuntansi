@@ -1,7 +1,7 @@
 // ====== Aplikasi HP Inventarisasi UPKL: login, tab, cari, progres, detail, pemindai ======
 // Memakai fungsi form (doLookup, setPetugas, esc, $ …) yang sudah dimuat di index.html.
 (function () {
-  const APP_VERSION = '1.2';
+  const APP_VERSION = '1.3';
   // indeks kolom data aset (lihat dataAset() di Code.gs)
   const C = 0, A = 1, S = 2, D = 3, L = 4, Q = 5, B = 6, CC = 7, T = 8, K = 9, QF = 10, P = 11, N = 12, U = 13, TP = 14, LC = 15;
   const LS = {
@@ -69,13 +69,56 @@
   // ---------- tab ----------
   function go(v) {
     view = v;
-    ['inven', 'cari', 'progres'].forEach(x => $('view' + x[0].toUpperCase() + x.slice(1)).classList.toggle('hidden', x !== v));
+    TABS.forEach(x => $('view' + x[0].toUpperCase() + x.slice(1)).classList.toggle('hidden', x !== v));
     document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
     LS.set('inv-tab', v);
     window.scrollTo(0, 0);
-    if (v !== 'inven') { renderActive(); loadData(false); }
+    if (v !== 'inven' && v !== 'attb') { renderActive(); if (APP.pin()) loadData(false); }
   }
-  function renderActive() { if (view === 'cari') renderCari(); else if (view === 'progres') renderProgres(); }
+  const TABS = ['home', 'cari', 'attb', 'inven', 'progres'];
+  function renderActive() { if (view === 'cari') renderCari(); else if (view === 'progres') renderProgres(); else if (view === 'home') renderHome(); }
+
+  // ---------- HOME ----------
+  function sapa() { const h = new Date().getHours(); return h < 11 ? 'Selamat pagi,' : h < 15 ? 'Selamat siang,' : h < 18 ? 'Selamat sore,' : 'Selamat malam,'; }
+  function recentList() { try { const a = JSON.parse(LS.get('inv-recent', '[]')); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function addRecent(code) { const a = recentList().filter(c => keyCode(c) !== keyCode(code)); a.unshift(code); LS.set('inv-recent', JSON.stringify(a.slice(0, 10))); }
+  function renderHome() {
+    $('hHi').textContent = sapa();
+    $('hName').textContent = (typeof petugasNama === 'string' && petugasNama) ? petugasNama : 'Petugas Inventaris';
+    if (data) {
+      const lok = {}; let sud = 0;
+      data.items.forEach(x => { lok[x[L]] = 1; if (x[T]) sud++; });
+      $('hJml').textContent = data.items.length.toLocaleString('id-ID') + ' aset · ' + Object.keys(lok).length + ' lokasi';
+      $('hPct').textContent = String(pct(sud, data.items.length)).replace('.', ',') + '%';
+    }
+    const rc = recentList().slice(0, 3).map(c => findItem(c) || [c, '', '', c, '', '', '', '', 0]);
+    $('hRecent').innerHTML = rc.length ? rc.map(x =>
+      '<div class="it" data-c="' + esc(x[C]) + '"><div class="m"><b>' + esc(x[D] || x[C]) + '</b><small>' + esc((x[A] ? x[A] + '-' + x[S] + ' · ' : '') + (x[L] || '')) + '</small></div>' +
+      (x[T] ? '<span class="badge ok">SUDAH</span>' : '<span class="badge no">BELUM</span>') + '</div>').join('')
+      : '<div class="empty">Belum ada. Aset yang Anda buka di Bank Data akan muncul di sini.</div>';
+  }
+  // foto latar Home (slideshow): daftar file di config.js -> HERO_FOTO
+  (function () {
+    const list = ((window.CONFIG && CONFIG.HERO_FOTO) || []).filter(Boolean);
+    $('hSlides').innerHTML = list.map((f, i) => '<div' + (i ? '' : ' class="on"') + ' style="background-image:url(\'' + encodeURI(f).replace(/'/g, '%27') + '\')"></div>').join('');
+    $('hDots').innerHTML = list.length > 1 ? list.map((f, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('') : '';
+    if (list.length > 1) {
+      let k = 0;
+      setInterval(() => {
+        if (view !== 'home' || document.hidden) return;
+        const s = $('hSlides').children, d = $('hDots').children;
+        s[k].classList.remove('on'); d[k].classList.remove('on');
+        k = (k + 1) % s.length;
+        s[k].classList.add('on'); d[k].classList.add('on');
+      }, ((window.CONFIG && CONFIG.HERO_DETIK) || 6) * 1000);
+    }
+  })();
+  document.querySelectorAll('#viewHome .chalk').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+  $('hCari').addEventListener('click', () => { go('cari'); setTimeout(() => $('q').focus(), 80); });
+  $('hScan').addEventListener('click', () => openAppScanner('cari'));
+  $('hAll').addEventListener('click', () => go('cari'));
+  $('hRecent').addEventListener('click', e => { const it = e.target.closest('.it'); if (it) openDetail(it.dataset.c); });
+  document.querySelectorAll('#menu .soonBtn').forEach(b => b.addEventListener('click', () => { $('menu').classList.add('hidden'); toast(b.textContent.trim() + ': segera dibangun'); }));
   document.querySelectorAll('#nav button').forEach(b => b.addEventListener('click', () => go(b.dataset.v)));
 
   // ---------- CARI ----------
@@ -178,6 +221,7 @@
   let detCode = '';
   function openDetail(code) {
     detCode = code;
+    addRecent(code);
     const it = findItem(code);
     $('detCode').textContent = code;
     $('detTitle').textContent = it ? it[D] : code;
@@ -522,6 +566,7 @@
       }
     }
     if (loginInfo && loginInfo.mode === 'nip') setPetugas(loginInfo.nama, false);
+    if (view === 'home') renderHome();
     loadData(false);
     syncQueue(false);
   }
@@ -577,8 +622,7 @@
   try { const pg = JSON.parse(LS.get('inv-peg', '[]')); if (Array.isArray(pg) && pg.length && !pegawai.length) pegawai = pg; } catch (e) {}
   try { applyLogin(JSON.parse(LS.get('inv-login', 'null'))); } catch (e) { applyLogin(null); }
   setOnline(); updateQueueUi();
-  const t0 = LS.get('inv-tab', 'inven');
-  go(['inven', 'cari', 'progres'].indexOf(t0) >= 0 ? t0 : 'inven');
+  go('home');   // aplikasi selalu dibuka di Home
   if (!APP.pin()) showLogin('');
   else { APP.call('infoApp').then(afterLogin).catch(() => {}); }
   setInterval(() => syncQueue(false), 60 * 1000);
