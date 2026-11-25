@@ -118,11 +118,10 @@
   $('hScan').addEventListener('click', () => openAppScanner('cari'));
   $('hAll').addEventListener('click', () => go('cari'));
   $('hRecent').addEventListener('click', e => { const it = e.target.closest('.it'); if (it) openDetail(it.dataset.c); });
-  // Cetak stiker: halaman stiker yang sudah ada (stiker.html di Apps Script), dibuka di tab yang sama, data tetap dikunci PIN stiker
+  // Cetak stiker: stiker.html di folder aplikasi (sama persis dengan versi Apps Script), data dari HP -> bisa offline, tetap pakai PIN stiker
   $('mStiker').addEventListener('click', () => {
     $('menu').classList.add('hidden');
-    if (navigator.onLine === false) { toast('Cetak stiker butuh internet'); return; }
-    location.href = String((window.CONFIG && CONFIG.API_URL) || '').replace(/\?.*$/, '') + '?page=stiker';
+    location.href = 'stiker.html';
   });
   document.querySelectorAll('#menu .soonBtn').forEach(b => b.addEventListener('click', () => { $('menu').classList.add('hidden'); toast(b.textContent.replace('(segera)', '').trim() + ': segera dibangun'); }));
   document.querySelectorAll('#nav button').forEach(b => b.addEventListener('click', () => go(b.dataset.v)));
@@ -562,7 +561,7 @@
   }
   function afterLogin(r) {
     if (r && r.login) { LS.set('inv-login', JSON.stringify(r.login)); applyLogin(r.login); }
-    if (r) LS.set('inv-info', JSON.stringify({ aiAktif: r.aiAktif, aiNama: r.aiNama }));
+    if (r) LS.set('inv-info', JSON.stringify({ aiAktif: r.aiAktif, aiNama: r.aiNama, stikerHash: r.stikerHash || '' }));
     if (r && Array.isArray(r.pegawai)) {
       LS.set('inv-peg', JSON.stringify(r.pegawai));
       pegawai = r.pegawai;
