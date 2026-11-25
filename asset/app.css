@@ -120,11 +120,19 @@ body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px); o
 .lockTag { font-size: 11px; background: rgba(26,115,232,.12); color: var(--brand); border-radius: 10px; padding: 1px 7px; white-space: nowrap; }
 body.hasQ { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 52px); }
 
-/* login: Nota Dinas sebagai latar */
-#login { background: #eef1f5; }
-#login .nd { max-width: 620px; margin: 0 auto; padding: 14px 12px 0; }
-#login .nd img { width: 100%; display: block; border-radius: 6px; box-shadow: 0 3px 14px rgba(0,0,0,.18); background: #fff; }
-#login .box { max-width: 420px; margin: -6px auto 0; padding: 18px 20px 24px; background: var(--card); border-radius: 16px;
-  box-shadow: 0 6px 22px rgba(0,0,0,.18); position: relative; top: 0; margin-bottom: 30px; width: calc(100% - 24px); }
+/* login: Nota Dinas sebagai latar penuh, kotak login di atasnya */
+#login { background: #fff; display: flex; flex-direction: column; }
+#login .bg { flex: 1 0 auto; display: flex; flex-direction: column; background: url("notadinas.jpg") center top / contain no-repeat;
+  padding: 0 0 calc(env(safe-area-inset-bottom) + 16px); min-height: 480px; }
+#login .hdr { flex: 0 0 auto; position: relative; z-index: 1; }
+#login .box { margin: auto auto 0; width: calc(100% - 32px); max-width: 380px; padding: 22px 20px 20px; border-radius: 18px;
+  background: rgba(255,255,255,.88); color: #1f2933; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.28); position: relative; z-index: 1; }
 #login .box .logo { width: 64px; height: 64px; margin-top: 0; }
-#login h2 { margin-top: 10px; }
+#login .box h2 { margin-top: 10px; color: #0b3a66; }
+#login .box p, #login .box .hint { color: #4b5563; }
+#login .box input { background: #fff; color: #1f2933; border-color: #9aa5b1; }
+@media (prefers-color-scheme: dark) { #login .box { background: rgba(22,28,35,.86); color: #e8ecf0; }
+  #login .box h2 { color: #fff; } #login .box p, #login .box .hint { color: #b6c0cc; }
+  #login .box input { background: #0f141a; color: #e8ecf0; border-color: #4b5563; } }
+@media (min-width: 700px) { #login .bg { background-position: center center; } #login .box { margin: auto; } }
