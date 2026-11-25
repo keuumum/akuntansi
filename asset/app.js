@@ -1,7 +1,7 @@
 // ====== Aplikasi HP Inventarisasi UPKL: login, tab, cari, progres, detail, pemindai ======
 // Memakai fungsi form (doLookup, setPetugas, esc, $ …) yang sudah dimuat di index.html.
 (function () {
-  const APP_VERSION = '1.3';
+  const APP_VERSION = '1.4';
   // indeks kolom data aset (lihat dataAset() di Code.gs)
   const C = 0, A = 1, S = 2, D = 3, L = 4, Q = 5, B = 6, CC = 7, T = 8, K = 9, QF = 10, P = 11, N = 12, U = 13, TP = 14, LC = 15;
   const LS = {
@@ -83,12 +83,13 @@
   function recentList() { try { const a = JSON.parse(LS.get('inv-recent', '[]')); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   function addRecent(code) { const a = recentList().filter(c => keyCode(c) !== keyCode(code)); a.unshift(code); LS.set('inv-recent', JSON.stringify(a.slice(0, 10))); }
   function renderHome() {
+    setTimeout(() => { try { hLayout(); } catch (e) {} }, 0);
     $('hHi').textContent = sapa();
     $('hName').textContent = (typeof petugasNama === 'string' && petugasNama) ? petugasNama : 'Petugas Inventaris';
     if (data) {
       const lok = {}; let sud = 0;
       data.items.forEach(x => { lok[x[L]] = 1; if (x[T]) sud++; });
-      $('hJml').textContent = data.items.length.toLocaleString('id-ID') + ' aset · ' + Object.keys(lok).length + ' lokasi';
+      HO[0].i = 'Ada ' + data.items.length.toLocaleString('id-ID') + ' aset di ' + Object.keys(lok).length + ' lokasi: foto, PDF, riwayat inven. Ketuk mesinnya!';
       $('hPct').textContent = String(pct(sud, data.items.length)).replace('.', ',') + '%';
     }
     const rc = recentList().slice(0, 3).map(c => findItem(c) || [c, '', '', c, '', '', '', '', 0]);
@@ -97,23 +98,80 @@
       (x[T] ? '<span class="badge ok">SUDAH</span>' : '<span class="badge no">BELUM</span>') + '</div>').join('')
       : '<div class="empty">Belum ada. Aset yang Anda buka di Bank Data akan muncul di sini.</div>';
   }
-  // foto latar Home (slideshow): daftar file di config.js -> HERO_FOTO
-  (function () {
-    const list = ((window.CONFIG && CONFIG.HERO_FOTO) || []).filter(Boolean);
-    $('hSlides').innerHTML = list.map((f, i) => '<div' + (i ? '' : ' class="on"') + ' style="background-image:url(\'' + encodeURI(f).replace(/'/g, '%27') + '\')"></div>').join('');
-    $('hDots').innerHTML = list.length > 1 ? list.map((f, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('') : '';
-    if (list.length > 1) {
-      let k = 0;
-      setInterval(() => {
-        if (view !== 'home' || document.hidden) return;
-        const s = $('hSlides').children, d = $('hDots').children;
-        s[k].classList.remove('on'); d[k].classList.remove('on');
-        k = (k + 1) % s.length;
-        s[k].classList.add('on'); d[k].classList.add('on');
-      }, ((window.CONFIG && CONFIG.HERO_DETIK) || 6) * 1000);
+  // ---------- HOME ANIMASI: petugas berjalan mengikuti kursor / ke objek ----------
+  const HO = [
+    { tab: 'cari', stand: 236, j: 'Ini mesin pembangkit = ASET', i: 'Semua aset UPKL ada di Bank Data: foto, PDF, riwayat inven. Ketuk mesinnya!' },
+    { tab: 'inven', stand: 196, j: 'Pos scan Inven 2026', i: 'Scan barcode stiker, foto aset, cek AI, lalu simpan. Ketuk pos scan untuk mulai.' },
+    { tab: 'attb', stand: 270, j: 'Aset ATTB', i: 'Aset yang sudah tidak beroperasi. Cek daftar & kondisinya di sini.' },
+    { tab: 'progres', stand: 270, j: 'Papan progres', i: 'Lihat berapa persen aset sudah diinven, per lokasi & per petugas.' }];
+  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let hx = 200, hdir = 1, hi = -1, hHover = false, hWalkT = 0;
+  // Lebar adegan menyesuaikan layar: HP = 390 unit; layar lebar = lebih banyak unit, objek disebar (tidak ikut membesar)
+  const HB = { o0: 109, o1: 248, o2: 339, o3: 336, bld: 210, c1: 70, c2: 257 };   // titik tengah asli tiap objek
+  const HS0 = [236, 196, 270, 270];                                                 // posisi berdiri asli
+  let HW = 390, HDX = { o0: 0, o1: 0, o2: 0, o3: 0, bld: 0, c1: 0, c2: 0 };
+  function hLayout() {
+    const wrap = $('hHero'), pw = wrap.clientWidth || 390;
+    const tinggi = pw < 700 ? pw * 400 / 390 : Math.min(460, Math.max(360, window.innerHeight * .5));
+    HW = Math.max(390, Math.round(pw * 400 / tinggi));
+    if (HW <= 430) { Object.keys(HDX).forEach(k => HDX[k] = 0); }
+    else {
+      const tgt = { o0: .2, o1: .42, o2: .62, o3: .82, bld: .5, c1: .12, c2: .7 };
+      Object.keys(tgt).forEach(k => HDX[k] = Math.round(HW * tgt[k] - HB[k]));
     }
+    $('hSvg').setAttribute('viewBox', '0 0 ' + HW + ' 400');
+    document.querySelectorAll('#hSvg [data-l]').forEach(g => g.setAttribute('transform', 'translate(' + HDX[g.dataset.l] + ',0)'));
+    HO.forEach((o, k) => { o.stand = HS0[k] + HDX['o' + k]; });
+    hx = Math.max(40, Math.min(HW - 40, hx));
+    hPlace(0);
+  }
+  function hBubble(j, i) {
+    $('hBubT').textContent = j; $('hBubI').textContent = i;
+    const b = $('hBub'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+  }
+  function hPlace(dur) {
+    const man = $('hMan');
+    man.style.transition = 'transform ' + (reduce ? 0 : dur) + 's linear';
+    man.style.transform = 'translate(' + hx + 'px,392px) scale(' + (.78 * hdir) + ',.78)';
+    // balon chat mengikuti petugas (posisi dalam % lebar adegan)
+    const bub = $('hBub'), W = $('hSvg').getBoundingClientRect().width || 390, bw = bub.offsetWidth || 220;
+    const px = hx / HW * W, left = Math.max(6, Math.min(W - bw - 6, px - bw * .7));
+    bub.style.transition = 'left ' + (reduce ? 0 : dur) + 's linear'; bub.style.left = left + 'px';
+    $('hBubTail').style.left = Math.max(14, Math.min(bw - 30, px - left - 7)) + 'px';
+  }
+  function hWalk(x, k) {
+    x = Math.max(40, Math.min(HW - 40, x));
+    const d = Math.abs(x - hx);
+    if (d < 4 && k === hi) return;
+    const dur = Math.min(1.6, Math.max(.25, d / 160));
+    if (x !== hx) hdir = x < hx ? -1 : 1;
+    hx = x;
+    const prev = hi; hi = k;
+    document.querySelectorAll('#hSvg .hl').forEach(g => g.classList.toggle('on', Number(g.dataset.k) === k));
+    if (k !== prev) { if (k >= 0) hBubble(HO[k].j, HO[k].i); else hBubble(sapa().replace(',', '') + '!', 'Arahkan kursor / sentuh benda di sekitar saya untuk tahu fungsinya.'); }
+    $('hBeam').style.display = 'none';
+    $('hManIn').classList.toggle('walk', d > 4 && !reduce);
+    hPlace(dur);
+    clearTimeout(hWalkT);
+    hWalkT = setTimeout(() => { $('hManIn').classList.remove('walk'); if (hi === 1) $('hBeam').style.display = 'inline'; }, dur * 1000);
+  }
+  (function () {
+    const svg = $('hSvg');
+    const toX = e => { const r = svg.getBoundingClientRect(); return (e.clientX - r.left) * HW / r.width; };
+    svg.addEventListener('mousemove', e => { if (e.target.classList.contains('hit')) return; hHover = true; hWalk(toX(e), -1); });
+    svg.addEventListener('mouseleave', () => { hHover = false; });
+    document.querySelectorAll('#hSvg .hit').forEach(r => {
+      const k = Number(r.dataset.k);
+      r.addEventListener('mouseenter', () => { hHover = true; hWalk(HO[k].stand, k); });
+      r.addEventListener('focus', () => hWalk(HO[k].stand, k));
+      r.addEventListener('click', () => go(HO[k].tab));
+      r.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(HO[k].tab); } });
+    });
+    // tanpa kursor (HP): keliling ke tiap objek bergantian
+    setInterval(() => { if (view === 'home' && !hHover && !document.hidden) hWalk(HO[(hi + 1) % 4].stand, (hi + 1) % 4); }, 4000);
+    window.addEventListener('resize', hLayout);
+    setTimeout(() => { hBubble('Halo!', 'Saya petugas inventaris. Sentuh benda di sekitar saya untuk tahu fungsinya.'); hLayout(); }, 50);
   })();
-  document.querySelectorAll('#viewHome .chalk').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
   $('hCari').addEventListener('click', () => { go('cari'); setTimeout(() => $('q').focus(), 80); });
   $('hScan').addEventListener('click', () => openAppScanner('cari'));
   $('hAll').addEventListener('click', () => go('cari'));

@@ -15,8 +15,8 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="config.js?v=1.3.11251031"></script>
-<script src="api.js?v=1.3.11251031"></script>
+<script src="config.js?v=1.4.11251109"></script>
+<script src="api.js?v=1.4.11251109"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
@@ -75,7 +75,7 @@
   .aclist div.acNon { background:rgba(232,164,0,.08); }
   a { color:var(--brand); }
 </style>
-<link rel="stylesheet" href="app.css?v=1.3.11251031">
+<link rel="stylesheet" href="app.css?v=1.4.11251109">
 </head>
 <body>
 <header class="appbar">
@@ -152,7 +152,7 @@
   </div>
 </div>
 
-<div class="hint foot">app v1.3 - © Han with Claude🤖✨</div>
+<div class="hint foot">app v1.4 - © Han with Claude🤖✨</div>
 </main>
 <!-- ===== HOME ===== -->
 <main id="viewHome" class="view hidden">
@@ -164,17 +164,83 @@
       <button id="hScan" type="button" class="hScan" aria-label="Scan barcode untuk lihat detail aset"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a2f00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7V4h3M17 4h3v3M20 17v3h-3M7 20H4v-3M7 8v8M10 8v8M13 8v8M17 8v8"/></svg></button>
     </div>
   </section>
-  <section class="hHero" id="hHero">
-    <div class="hSlides" id="hSlides"></div>
-    <div class="hStage">
-    <button type="button" class="chalk cBank" data-go="cari"><b>BANK DATA</b><b class="y">ASET UPKL</b><small id="hJml">aset · lokasi</small></button>
-    <button type="button" class="chalk cAttb" data-go="attb"><b>ATTB</b></button>
-    <svg class="arw a1" width="70" height="40" viewBox="0 0 70 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M4 30 C 25 34, 45 26, 62 10"/><path d="M50 9 L63 9 L61 22"/></svg>
-    <button type="button" class="chalk cInven" data-go="inven"><b class="y">INVEN 2026</b><span>scan &amp; foto di sini</span></button>
-    <svg class="arw a2" width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="#ffd400" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M62 52 C 50 25, 34 14, 8 12"/><path d="M19 4 L7 12 L18 22"/></svg>
-    <button type="button" class="chalk cPct" data-go="progres"><span>sudah diinven</span><b class="y" id="hPct">–%</b></button>
+  <section class="hScene" id="hHero">
+    <div class="hWrap">
+<svg id="hSvg" viewBox="0 0 390 400" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Ilustrasi petugas PLN di area pembangkit">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc4f0"/><stop offset="1" stop-color="#cdeafb"/></linearGradient>
+<linearGradient id="gen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f9e6e"/><stop offset="1" stop-color="#1f7a52"/></linearGradient>
+</defs>
+<rect x="-50" width="4000" height="270" fill="url(#sky)"/>
+<g data-l="c1"><g class="cloud c1"><ellipse cx="60" cy="40" rx="26" ry="10" fill="#fff"/><ellipse cx="78" cy="34" rx="18" ry="11" fill="#fff"/></g></g>
+<g data-l="c2"><g class="cloud c2"><ellipse cx="250" cy="28" rx="22" ry="8" fill="#fff" opacity=".9"/><ellipse cx="264" cy="23" rx="14" ry="9" fill="#fff" opacity=".9"/></g></g>
+<g data-l="bld"><rect x="150" y="120" width="120" height="150" fill="#b9c7d3"/><rect x="160" y="135" width="16" height="16" fill="#8fa3b4"/><rect x="186" y="135" width="16" height="16" fill="#8fa3b4"/><rect x="212" y="135" width="16" height="16" fill="#8fa3b4"/><rect x="238" y="135" width="16" height="16" fill="#8fa3b4"/>
+<rect x="232" y="50" width="18" height="75" fill="#a7b6c3"/><rect x="230" y="50" width="22" height="8" fill="#d9534f"/>
+<g class="smoke"><circle cx="241" cy="40" r="7" fill="#fff" opacity=".8"/><circle cx="249" cy="26" r="9" fill="#fff" opacity=".6"/><circle cx="259" cy="10" r="11" fill="#fff" opacity=".4"/></g></g>
+<rect x="-50" y="262" width="4000" height="138" fill="#9aa5ad"/><rect x="-50" y="262" width="4000" height="6" fill="#7f8a92"/>
+<g data-l="o3"><g id="board">
+<rect x="296" y="78" width="80" height="62" rx="4" fill="#fff" stroke="#2b3440" stroke-width="3"/>
+<rect x="306" y="118" width="12" height="14" fill="#2f9e6e"/><rect x="322" y="106" width="12" height="26" fill="#2f9e6e"/><rect x="338" y="96" width="12" height="36" fill="#ffd400"/><rect x="354" y="112" width="12" height="20" fill="#cfd6dc"/>
+<text id="hPct" x="336" y="93" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="11" fill="#0b5394">–%</text>
+<path d="M306 140 L300 200 M366 140 L372 200" stroke="#2b3440" stroke-width="3" stroke-linecap="round"/>
+</g></g>
+<g data-l="o2"><g id="attb">
+<rect x="300" y="226" width="70" height="44" rx="6" fill="#9b6a43"/><rect x="306" y="232" width="58" height="10" fill="#7a5233"/>
+<circle cx="318" cy="258" r="8" fill="#6e4a2e"/><circle cx="352" cy="258" r="8" fill="#6e4a2e"/>
+<path d="M312 226 l4 -10 M358 226 l-3 -9" stroke="#6e4a2e" stroke-width="3"/>
+<circle cx="326" cy="236" r="3" fill="#c98b5a"/><circle cx="345" cy="247" r="2.5" fill="#c98b5a"/>
+<g class="tag"><path d="M362 226 L372 206" stroke="#555" stroke-width="1.5"/><rect x="360" y="196" width="26" height="14" rx="2" fill="#d9534f" transform="rotate(12 373 203)"/><text x="373" y="207" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="7" fill="#fff" transform="rotate(12 373 203)">ATTB</text></g>
+</g></g>
+<g data-l="o0"><g id="gen">
+<rect x="14" y="196" width="190" height="104" rx="10" fill="url(#gen)" stroke="#155e3f" stroke-width="3"/>
+<rect x="24" y="208" width="70" height="56" rx="6" fill="#18684a"/>
+<g class="fan" style="transform-origin:59px 236px"><circle cx="59" cy="236" r="22" fill="#0f4e37"/><path d="M59 236 L59 216 M59 236 L78 242 M59 236 L47 252" stroke="#9fe0c3" stroke-width="5" stroke-linecap="round"/><circle cx="59" cy="236" r="5" fill="#9fe0c3"/></g>
+<rect x="104" y="208" width="88" height="40" rx="4" fill="#e6efe9"/><circle cx="118" cy="228" r="9" fill="#fff" stroke="#155e3f" stroke-width="2"/><path class="needle" d="M118 228 L124 222" stroke="#d9534f" stroke-width="2" stroke-linecap="round"/>
+<circle class="led" cx="140" cy="222" r="3.5" fill="#3ddc84"/><circle cx="152" cy="222" r="3.5" fill="#ffd400"/><circle cx="164" cy="222" r="3.5" fill="#cfd6dc"/>
+<rect x="134" y="232" width="50" height="7" rx="2" fill="#155e3f" opacity=".5"/>
+<g><rect x="104" y="256" width="58" height="30" rx="2" fill="#ffd400" stroke="#8a7300" stroke-width="1"/><rect x="108" y="260" width="14" height="14" fill="#fff"/><path d="M110 262h3v3h-3zM117 262h3v3h-3zM110 269h3v3h-3z" fill="#222"/><path d="M126 262v14M128 262v14M131 262v14M133 262v14M136 262v14M139 262v14M141 262v14M144 262v14M147 262v14M150 262v14M153 262v14M156 262v14" stroke="#222" stroke-width="1.2"/></g>
+<rect x="20" y="300" width="20" height="8" fill="#555"/><rect x="178" y="300" width="20" height="8" fill="#555"/>
+</g></g>
+<g data-l="o1"><g id="kiosk">
+<rect x="244" y="250" width="8" height="58" fill="#5b6470"/><rect x="230" y="304" width="36" height="6" rx="3" fill="#3d444c"/>
+<rect x="218" y="214" width="60" height="42" rx="6" fill="#1d2228"/><rect x="223" y="219" width="50" height="32" rx="3" fill="#e8f0fb"/>
+<path d="M229 224v22M231 224v22M234 224v22M236 224v22M239 224v22M242 224v22M244 224v22M247 224v22M250 224v22M253 224v22M255 224v22M258 224v22M261 224v22M264 224v22M266 224v22" stroke="#1d2228" stroke-width="1.3"/>
+<rect x="224" y="196" width="48" height="14" rx="3" fill="#ffd400"/><text x="248" y="206" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="8" fill="#3a2f00">SCAN</text>
+</g></g>
+<g class="hl" data-k="0" data-l="o0"><rect x="10" y="190" width="200" height="124" rx="8" fill="none" stroke="#fff" stroke-width="3.5" stroke-dasharray="14 3 6 3" stroke-linecap="round"/><path d="M110 176 q4 8 0 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text x="110" y="170" text-anchor="middle" font-family="Caveat Brush,cursive" font-size="25" fill="#fff" stroke="#1d2228" stroke-width="4" paint-order="stroke">Bank Data</text></g><g class="hl" data-k="1" data-l="o1"><rect x="212" y="190" width="72" height="124" rx="8" fill="none" stroke="#fff" stroke-width="3.5" stroke-dasharray="14 3 6 3" stroke-linecap="round"/><path d="M248 176 q4 6 0 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text x="248" y="172" text-anchor="middle" font-family="Caveat Brush,cursive" font-size="25" fill="#fff" stroke="#1d2228" stroke-width="4" paint-order="stroke">Inven 2026</text></g><g class="hl" data-k="2" data-l="o2"><rect x="292" y="190" width="94" height="90" rx="8" fill="none" stroke="#fff" stroke-width="3.5" stroke-dasharray="14 3 6 3" stroke-linecap="round"/><path d="M340 284 q4 -6 0 -2" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text x="340" y="300" text-anchor="middle" font-family="Caveat Brush,cursive" font-size="25" fill="#fff" stroke="#1d2228" stroke-width="4" paint-order="stroke">ATTB</text></g><g class="hl" data-k="3" data-l="o3"><rect x="290" y="70" width="92" height="76" rx="8" fill="none" stroke="#fff" stroke-width="3.5" stroke-dasharray="14 3 6 3" stroke-linecap="round"/><path d="M282 60 q8 4 10 14" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text x="278" y="66" text-anchor="end" font-family="Caveat Brush,cursive" font-size="25" fill="#fff" stroke="#1d2228" stroke-width="4" paint-order="stroke">Progres</text></g>
+<g id="hMan" style="transform:translate(200px,392px) scale(.78,.78)">
+<g id="hManIn" transform="translate(-262,-392)">
+<g class="breathe">
+<ellipse cx="262" cy="390" rx="46" ry="7" fill="#000" opacity=".18"/>
+<g class="legL"><path d="M240 318 L236 376 L254 376 L258 324 Z" fill="#23324a"/><path d="M228 374 h30 v10 h-34 a6 6 0 0 1 4-10z" fill="#1d1d1d"/><path d="M224 382 h34" stroke="#ffd400" stroke-width="3"/></g>
+<g class="legR"><path d="M272 318 L270 376 L288 376 L286 322 Z" fill="#23324a"/><path d="M268 374 h28 a6 6 0 0 1 4 10 h-32z" fill="#1d1d1d"/><path d="M268 382 h32" stroke="#ffd400" stroke-width="3"/></g>
+
+
+
+<path d="M236 236 q26 -12 52 0 l6 88 h-64 z" fill="#f4f6f8"/>
+<path d="M234 240 q28 -10 56 0 l4 84 h-24 l-6 -70 l-6 70 h-24 z" fill="#3fa9e6"/>
+<path d="M232 286 h62 v8 h-62z" fill="#d8dee4"/><path d="M232 300 h62 v6 h-62z" fill="#d8dee4"/>
+<path d="M246 242 v84 M278 242 v84" stroke="#d8dee4" stroke-width="6"/>
+<rect x="282" y="252" width="13" height="13" rx="1" fill="#ffd400"/><path d="M289 254 l-3 5 h4 l-3 5" stroke="#d9534f" stroke-width="1.4" fill="none"/>
+<text x="257" y="274" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="8" fill="#fff">PLN</text>
+<g class="armR"><path d="M236 246 q-30 6 -54 24" stroke="#f4f6f8" stroke-width="13" stroke-linecap="round" fill="none"/><path d="M236 246 q-14 3 -22 8" stroke="#3fa9e6" stroke-width="15" stroke-linecap="round" fill="none"/>
+<circle cx="180" cy="272" r="7" fill="#f1c27d"/><rect x="164" y="258" width="14" height="24" rx="3" fill="#222" transform="rotate(-20 171 270)"/>
+<path class="beam" id="hBeam" style="display:none" d="M164 266 L120 270 L164 276 Z" fill="#ff3b30" opacity=".55"/></g>
+<g class="wave"><path d="M290 246 q18 -18 22 -46" stroke="#f4f6f8" stroke-width="13" stroke-linecap="round" fill="none"/><path d="M290 246 q8 -8 12 -18" stroke="#3fa9e6" stroke-width="15" stroke-linecap="round" fill="none"/><circle cx="312" cy="196" r="8" fill="#f1c27d"/></g>
+<rect x="254" y="222" width="16" height="16" fill="#f1c27d"/>
+<g class="head"><circle cx="262" cy="200" r="27" fill="#f6cf9a"/>
+<ellipse cx="236" cy="203" rx="5" ry="7" fill="#f1c27d"/><ellipse cx="288" cy="203" rx="5" ry="7" fill="#f1c27d"/>
+<g class="eyes"><ellipse cx="252" cy="201" rx="3.6" ry="4.6" fill="#2b2b2b"/><ellipse cx="272" cy="201" rx="3.6" ry="4.6" fill="#2b2b2b"/><circle cx="253" cy="199" r="1.2" fill="#fff"/><circle cx="273" cy="199" r="1.2" fill="#fff"/></g>
+<ellipse cx="246" cy="211" rx="4" ry="2.5" fill="#f19a8a" opacity=".6"/><ellipse cx="278" cy="211" rx="4" ry="2.5" fill="#f19a8a" opacity=".6"/>
+<path d="M254 212 q8 8 16 0" stroke="#7a3a2a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<path d="M232 190 q30 -42 60 0 z" fill="#ffffff" stroke="#c9d2da" stroke-width="2"/><rect x="228" y="186" width="68" height="8" rx="4" fill="#ffffff" stroke="#c9d2da" stroke-width="2"/>
+<rect x="255" y="166" width="14" height="14" rx="1" fill="#ffd400"/><path d="M262 168 l-3 5 h4 l-3 5" stroke="#d9534f" stroke-width="1.4" fill="none"/></g>
+</g>
+</g>
+</g>
+<rect class="hit" data-k="0" data-l="o0" x="10" y="190" width="200" height="124" rx="8" fill="transparent" tabindex="0" role="button" aria-label="Bank Data"/><rect class="hit" data-k="1" data-l="o1" x="212" y="190" width="72" height="124" rx="8" fill="transparent" tabindex="0" role="button" aria-label="Inven 2026"/><rect class="hit" data-k="2" data-l="o2" x="292" y="190" width="94" height="90" rx="8" fill="transparent" tabindex="0" role="button" aria-label="ATTB"/><rect class="hit" data-k="3" data-l="o3" x="290" y="70" width="92" height="76" rx="8" fill="transparent" tabindex="0" role="button" aria-label="Progres"/></svg>
+      <div class="hBub" id="hBub"><b id="hBubT">Halo!</b><span id="hBubI">Saya petugas inventaris.</span><i id="hBubTail"></i></div>
     </div>
-    <div class="hDots" id="hDots"></div>
   </section>
   <div class="wrap instWrap hidden" id="hInstall">
     <div class="instBar"><div><b>Pasang Aset UPKL di HP</b><small class="instTxt">Buka lebih cepat dari layar utama, bisa offline.</small></div>
@@ -184,7 +250,7 @@
     <div class="hLastHead"><span class="hand">Terakhir dilihat</span><button type="button" id="hAll" class="lnk">Lihat semua</button></div>
     <div id="hRecent" class="list"></div>
   </section>
-  <div class="hint foot">app v1.3 - © Han with Claude🤖✨</div>
+  <div class="hint foot">app v1.4 - © Han with Claude🤖✨</div>
 </main>
 
 <!-- ===== TAB ATTB ===== -->
@@ -1166,6 +1232,6 @@ window.addEventListener('load',function(){ window.Html5Qrcode ? start() : msg('L
   $('btnFind').addEventListener('click', doLookup);
   $('code').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doLookup(); } });
 </script>
-<script src="app.js?v=1.3.11251031"></script>
+<script src="app.js?v=1.4.11251109"></script>
 </body>
 </html>
