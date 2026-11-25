@@ -135,4 +135,13 @@ body.hasQ { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 52
 @media (prefers-color-scheme: dark) { #login .box { background: rgba(22,28,35,.86); color: #e8ecf0; }
   #login .box h2 { color: #fff; } #login .box p, #login .box .hint { color: #b6c0cc; }
   #login .box input { background: #0f141a; color: #e8ecf0; border-color: #4b5563; } }
-@media (min-width: 700px) { #login .bg { background-position: center center; } #login .box { margin: auto; } }
+/* laptop/PC: Nota Dinas di kiri, kotak login di kanan (berdampingan, tidak menutupi) */
+@media (min-width: 900px) {
+  #login { background: #e9edf2; }
+  #login .bg { flex-direction: row; align-items: center; justify-content: center; gap: 4vw; min-height: 0; padding: 3vh 4vw;
+    background: none; }
+  #login .bg::before { content: ""; flex: 0 1 560px; align-self: center; height: calc(100vh - 8.9vw - 7vh); max-height: 900px; min-height: 360px; margin: 0;
+    background: #fff url("notadinas.jpg") center / contain no-repeat; border-radius: 8px; box-shadow: 0 8px 28px rgba(0,0,0,.18);
+    }
+  #login .box { margin: 0; flex: 0 0 380px; }
+}
