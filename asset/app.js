@@ -218,6 +218,7 @@
   function closeSheetUi(id) { $(id).classList.add('hidden'); if (['detail', 'scanView', 'qSheet'].every(x => $(x).classList.contains('hidden'))) document.body.style.overflow = ''; }
   window.addEventListener('popstate', () => {
     if (!$('scanView').classList.contains('hidden')) { stopCam(); closeSheetUi('scanView'); }
+    else if (!$('lb').classList.contains('hidden')) tutupLb(true);
     else if (!$('detail').classList.contains('hidden')) closeSheetUi('detail');
     else if (!$('qSheet').classList.contains('hidden')) closeSheetUi('qSheet');
   });
@@ -273,12 +274,96 @@
   function files(list, kosong) {
     if (!list.length) return '<div class="hint">' + kosong + '</div>';
     const img = list.filter(f => /^image\//.test(f.mime)), oth = list.filter(f => !/^image\//.test(f.mime));
-    return (img.length ? '<div class="gal">' + img.map(f => '<a href="https://drive.google.com/file/d/' + encodeURIComponent(f.id) + '/view" target="_blank" rel="noopener">' +
+    return (img.length ? '<div class="gal">' + img.map(f => '<a href="https://drive.google.com/file/d/' + encodeURIComponent(f.id) + '/view" target="_blank" rel="noopener" data-id="' + esc(f.id) + '" data-nama="' + esc(f.nama) + '">' +
       '<img loading="lazy" alt="' + esc(f.nama) + '" src="https://drive.google.com/thumbnail?sz=w400&id=' + encodeURIComponent(f.id) + '"></a>').join('') + '</div>' : '') +
       (oth.length ? '<div class="files" style="margin-top:6px">' + oth.map(f => '<a class="f" href="https://drive.google.com/file/d/' + encodeURIComponent(f.id) + '/view" target="_blank" rel="noopener">' +
         (/pdf/.test(f.mime) ? '📄 ' : '📎 ') + esc(f.nama) + '</a>').join('') + '</div>' : '');
   }
   $('btnDetBack').addEventListener('click', () => history.back());
+
+  // ---------- LIHAT FOTO (popup + zoom) ----------
+  // Klik foto di detail -> tampil besar di aplikasi (tidak pindah tab). Zoom: cubit 2 jari / ketuk 2x / roda mouse / tombol +/-.
+  // Geser kiri-kanan untuk foto berikutnya. Tombol "Buka di Drive" tetap tersedia (tab baru).
+  let lbList = [], lbI = 0, lbS = 1, lbX = 0, lbY = 0;
+  const lbImg = () => $('lbImg');
+  function lbApply(anim) {
+    const im = lbImg(); im.style.transition = anim ? 'transform .2s' : 'none';
+    im.style.transform = 'translate(' + lbX + 'px,' + lbY + 'px) scale(' + lbS + ')';
+    $('lbZoom').textContent = Math.round(lbS * 100) + '%';
+  }
+  function lbBatas() {
+    const im = lbImg(), w = im.clientWidth * lbS, h = im.clientHeight * lbS, W = innerWidth, H = innerHeight;
+    const mx = Math.max(0, (w - W) / 2), my = Math.max(0, (h - H) / 2);
+    lbX = Math.min(mx, Math.max(-mx, lbX)); lbY = Math.min(my, Math.max(-my, lbY));
+  }
+  function lbSetZoom(s, cx, cy) {
+    s = Math.min(6, Math.max(1, s));
+    if (cx != null) { const ox = cx - innerWidth / 2 - lbX, oy = cy - innerHeight / 2 - lbY; lbX -= ox * (s / lbS - 1); lbY -= oy * (s / lbS - 1); }
+    lbS = s; if (s === 1) { lbX = 0; lbY = 0; } lbBatas(); lbApply(true);
+  }
+  function lbShow(i) {
+    lbI = (i + lbList.length) % lbList.length; lbS = 1; lbX = 0; lbY = 0;
+    const f = lbList[lbI], im = lbImg();
+    $('lbLoad').classList.remove('hidden');
+    im.onload = () => $('lbLoad').classList.add('hidden');
+    im.onerror = () => { $('lbLoad').textContent = 'Foto tidak bisa dimuat (perlu internet).'; };
+    im.src = 'https://drive.google.com/thumbnail?sz=w2000&id=' + encodeURIComponent(f.id);
+    $('lbCap').textContent = (lbList.length > 1 ? (lbI + 1) + '/' + lbList.length + ' · ' : '') + f.nama;
+    $('lbDrive').href = 'https://drive.google.com/file/d/' + encodeURIComponent(f.id) + '/view';
+    $('lbPrev').classList.toggle('hidden', lbList.length < 2); $('lbNext').classList.toggle('hidden', lbList.length < 2);
+    lbApply(false);
+  }
+  function bukaLb(list, i) { lbList = list; $('lb').classList.remove('hidden'); history.pushState({ lb: 1 }, ''); lbShow(i); }
+  function tutupLb(dariBack) { $('lb').classList.add('hidden'); lbImg().src = ''; if (!dariBack) history.back(); }
+  $('detail').addEventListener('click', e => {
+    const a = e.target.closest('.gal a'); if (!a) return;
+    e.preventDefault();
+    const gal = [...a.parentNode.querySelectorAll('a')];
+    bukaLb(gal.map(x => ({ id: x.dataset.id, nama: x.dataset.nama })), gal.indexOf(a));
+  });
+  $('lbClose').addEventListener('click', () => tutupLb(false));
+  $('lbPrev').addEventListener('click', () => lbShow(lbI - 1));
+  $('lbNext').addEventListener('click', () => lbShow(lbI + 1));
+  $('lbIn').addEventListener('click', () => lbSetZoom(lbS * 1.6));
+  $('lbOut').addEventListener('click', () => lbSetZoom(lbS / 1.6));
+  document.addEventListener('keydown', e => {
+    if ($('lb').classList.contains('hidden')) return;
+    if (e.key === 'Escape') tutupLb(false); else if (e.key === 'ArrowLeft') lbShow(lbI - 1); else if (e.key === 'ArrowRight') lbShow(lbI + 1);
+  });
+  (function () {
+    const st = $('lbStage'), pts = new Map(); let start = null, lastTap = 0;
+    st.addEventListener('wheel', e => { e.preventDefault(); lbSetZoom(lbS * (e.deltaY < 0 ? 1.25 : 0.8), e.clientX, e.clientY); }, { passive: false });
+    st.addEventListener('pointerdown', e => {
+      st.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 1) {
+        const now = Date.now();
+        if (now - lastTap < 300) { lbSetZoom(lbS > 1 ? 1 : 2.5, e.clientX, e.clientY); lastTap = 0; start = null; return; }
+        lastTap = now; start = { x: e.clientX, y: e.clientY, bx: lbX, by: lbY, s: lbS, t: now };
+      } else if (pts.size === 2) {
+        const [a, b] = [...pts.values()]; start = { pinch: Math.hypot(a.x - b.x, a.y - b.y), s: lbS, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2 };
+      }
+    });
+    st.addEventListener('pointermove', e => {
+      if (!pts.has(e.pointerId) || !start) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 2 && start.pinch) {
+        const [a, b] = [...pts.values()]; const s = Math.min(6, Math.max(1, start.s * Math.hypot(a.x - b.x, a.y - b.y) / start.pinch));
+        lbS = s; if (s === 1) { lbX = 0; lbY = 0; } lbBatas(); lbApply(false);
+      } else if (pts.size === 1 && start.bx != null) {
+        if (lbS > 1) { lbX = start.bx + e.clientX - start.x; lbY = start.by + e.clientY - start.y; lbBatas(); lbApply(false); }
+        else { lbX = e.clientX - start.x; lbApply(false); }
+      }
+    });
+    const up = e => {
+      pts.delete(e.pointerId);
+      if (start && start.bx != null && lbS === 1 && pts.size === 0) {
+        const dx = e.clientX - start.x;
+        if (Math.abs(dx) > 60 && lbList.length > 1) lbShow(lbI + (dx < 0 ? 1 : -1)); else { lbX = 0; lbApply(true); }
+      }
+      if (pts.size === 0) start = null;
+    };
+    st.addEventListener('pointerup', up); st.addEventListener('pointercancel', up);
+  })();
   $('btnDetInven').addEventListener('click', () => {
     const code = detCode; history.back();
     setTimeout(() => { go('inven'); $('code').value = code; doLookup(); }, 60);
