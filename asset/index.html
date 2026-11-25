@@ -13,8 +13,8 @@
 <meta name="apple-mobile-web-app-title" content="Inven UPKL">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script src="config.js"></script>
-<script src="api.js"></script>
+<script src="config.js?v=1.2.11250858"></script>
+<script src="api.js?v=1.2.11250858"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
@@ -73,7 +73,7 @@
   .aclist div.acNon { background:rgba(232,164,0,.08); }
   a { color:var(--brand); }
 </style>
-<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="app.css?v=1.2.11250858">
 </head>
 <body>
 <header class="appbar">
@@ -1098,6 +1098,6 @@ window.addEventListener('load',function(){ window.Html5Qrcode ? start() : msg('L
   $('btnFind').addEventListener('click', doLookup);
   $('code').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doLookup(); } });
 </script>
-<script src="app.js"></script>
+<script src="app.js?v=1.2.11250858"></script>
 </body>
 </html>
