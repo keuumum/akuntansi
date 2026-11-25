@@ -1,8 +1,8 @@
 // Service worker: aplikasi bisa dibuka cepat & tetap tampil walau sinyal lemah.
 // File aplikasi: ambil dari jaringan dulu (selalu versi terbaru), cadangan dari cache bila offline.
-const V = 'inv-app-1.1';
+const V = 'inv-app-1.2';
 const SHELL = ['./', './index.html', './app.js', './api.js', './app.css', './config.js', './manifest.webmanifest',
-  './icon-192.png', './icon-512.png', './header.jpg'];
+  './icon-192.png', './icon-512.png', './header.jpg', './notadinas.jpg'];
 const CDN = ['https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js', 'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js'];
 
 self.addEventListener('install', e => {

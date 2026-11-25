@@ -1,7 +1,7 @@
 // ====== Aplikasi HP Inventarisasi UPKL: login, tab, cari, progres, detail, pemindai ======
 // Memakai fungsi form (doLookup, setPetugas, esc, $ …) yang sudah dimuat di index.html.
 (function () {
-  const APP_VERSION = '1.1';
+  const APP_VERSION = '1.2';
   // indeks kolom data aset (lihat dataAset() di Code.gs)
   const C = 0, A = 1, S = 2, D = 3, L = 4, Q = 5, B = 6, CC = 7, T = 8, K = 9, QF = 10, P = 11, N = 12, U = 13, TP = 14, LC = 15;
   const LS = {

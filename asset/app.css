@@ -119,3 +119,12 @@ body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px); o
 .qerr { color: var(--err); font-size: 12px; margin-top: 3px; }
 .lockTag { font-size: 11px; background: rgba(26,115,232,.12); color: var(--brand); border-radius: 10px; padding: 1px 7px; white-space: nowrap; }
 body.hasQ { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 52px); }
+
+/* login: Nota Dinas sebagai latar */
+#login { background: #eef1f5; }
+#login .nd { max-width: 620px; margin: 0 auto; padding: 14px 12px 0; }
+#login .nd img { width: 100%; display: block; border-radius: 6px; box-shadow: 0 3px 14px rgba(0,0,0,.18); background: #fff; }
+#login .box { max-width: 420px; margin: -6px auto 0; padding: 18px 20px 24px; background: var(--card); border-radius: 16px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.18); position: relative; top: 0; margin-bottom: 30px; width: calc(100% - 24px); }
+#login .box .logo { width: 64px; height: 64px; margin-top: 0; }
+#login h2 { margin-top: 10px; }
