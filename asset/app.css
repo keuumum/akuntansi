@@ -184,4 +184,20 @@ body.hasQ { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 52
 #viewHome .it .m small { color: #5b6470; }
 #viewHome .foot { color: #5b6470; }
 .soon ul { padding-left: 20px; line-height: 1.6; } .soon .big { font-size: 34px; color: var(--brand); } .soon .sub { font-size: 22px; color: #b06000; }
-@media (min-width: 700px) { .hHero { height: 380px; } }
+
+
+/* label kapur & panah dikunci dalam "panggung" selebar layar HP, di tengah foto -> posisi panah selalu pas di semua lebar layar */
+
+/* panggung label: lebar tetap 390px di tengah, ikut membesar di layar lebar */
+.hStage { position: absolute; z-index: 2; top: 0; height: 330px; left: 50%; width: 390px; margin-left: -195px; transform-origin: top center; }
+.hHero { height: 330px; }
+@media (min-width: 700px) { .hHero { height: 400px; } .hStage { transform: scale(1.2); } }
+@media (max-width: 360px) { .hStage { transform: scale(.9); } }
+/* pasang aplikasi */
+.instWrap { padding-top: 12px; }
+.instBar { display: flex; align-items: center; gap: 12px; background: #e8f0fb; border: 1.5px solid #b9cff0; border-radius: 12px; padding: 10px 12px; color: #0b3a66; text-align: left; }
+.instBar > div { flex: 1; min-width: 0; }
+.instBar b { display: block; font-size: 14px; }
+.instBar small { display: block; font-size: 12px; color: #3d5a7a; margin-top: 2px; line-height: 1.35; }
+.instBar button { margin: 0; padding: 9px 16px; width: auto; flex: 0 0 auto; }
+.instWrap.ios .instBtn { display: none; }

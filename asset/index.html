@@ -15,8 +15,8 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="config.js?v=1.3.11251003"></script>
-<script src="api.js?v=1.3.11251003"></script>
+<script src="config.js?v=1.3.11251015"></script>
+<script src="api.js?v=1.3.11251015"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
@@ -75,7 +75,7 @@
   .aclist div.acNon { background:rgba(232,164,0,.08); }
   a { color:var(--brand); }
 </style>
-<link rel="stylesheet" href="app.css?v=1.3.11251003">
+<link rel="stylesheet" href="app.css?v=1.3.11251015">
 </head>
 <body>
 <header class="appbar">
@@ -166,14 +166,20 @@
   </section>
   <section class="hHero" id="hHero">
     <div class="hSlides" id="hSlides"></div>
+    <div class="hStage">
     <button type="button" class="chalk cBank" data-go="cari"><b>BANK DATA</b><b class="y">ASET UPKL</b><small id="hJml">aset · lokasi</small></button>
     <button type="button" class="chalk cAttb" data-go="attb"><b>ATTB</b></button>
     <svg class="arw a1" width="70" height="40" viewBox="0 0 70 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M4 30 C 25 34, 45 26, 62 10"/><path d="M50 9 L63 9 L61 22"/></svg>
     <button type="button" class="chalk cInven" data-go="inven"><b class="y">INVEN 2026</b><span>scan &amp; foto di sini</span></button>
     <svg class="arw a2" width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="#ffd400" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M62 52 C 50 25, 34 14, 8 12"/><path d="M19 4 L7 12 L18 22"/></svg>
     <button type="button" class="chalk cPct" data-go="progres"><span>sudah diinven</span><b class="y" id="hPct">–%</b></button>
+    </div>
     <div class="hDots" id="hDots"></div>
   </section>
+  <div class="wrap instWrap hidden" id="hInstall">
+    <div class="instBar"><div><b>Pasang Aset UPKL di HP</b><small class="instTxt">Buka lebih cepat dari layar utama, bisa offline.</small></div>
+    <button type="button" class="instBtn">Pasang</button></div>
+  </div>
   <section class="wrap hLast">
     <div class="hLastHead"><span class="hand">Terakhir dilihat</span><button type="button" id="hAll" class="lnk">Lihat semua</button></div>
     <div id="hRecent" class="list"></div>
@@ -303,6 +309,10 @@
     <input id="pinIn" type="text" placeholder="NIP atau PIN tim" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go">
     <button id="btnLogin" class="full" type="button">Masuk</button>
     <div id="loginMsg" class="msg err"></div>
+    <div class="instWrap hidden" id="lInstall" style="margin-top:14px">
+      <div class="instBar"><div><b>Pasang aplikasi di HP</b><small class="instTxt">Buka lebih cepat dari layar utama.</small></div>
+      <button type="button" class="instBtn">Pasang</button></div>
+    </div>
     <div class="hint" style="margin-top:18px">Pegawai: masukkan <b>NIP</b> Anda (nama terisi otomatis).<br>Non-pegawai: pakai PIN tim dari admin KU UPKL.<br>Cukup sekali di HP ini.</div>
   </div>
   </div>
@@ -1146,6 +1156,6 @@ window.addEventListener('load',function(){ window.Html5Qrcode ? start() : msg('L
   $('btnFind').addEventListener('click', doLookup);
   $('code').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doLookup(); } });
 </script>
-<script src="app.js?v=1.3.11251003"></script>
+<script src="app.js?v=1.3.11251015"></script>
 </body>
 </html>

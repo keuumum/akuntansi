@@ -604,8 +604,31 @@
   });
   // pasang ke layar utama (Android/Chrome)
   let installEvt = null;
-  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; $('mInstall').classList.remove('hidden'); });
-  $('mInstall').addEventListener('click', async () => { $('menu').classList.add('hidden'); if (installEvt) { installEvt.prompt(); installEvt = null; $('mInstall').classList.add('hidden'); } });
+  // Android & laptop (Chrome/Edge): tombol Pasang. iPhone/iPad: tidak ada tombol, tampil petunjuk manual.
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const terpasang = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  const IOS_TXT = 'iPhone/iPad: buka di Safari → ketuk tombol Bagikan (kotak panah ke atas) → "Tambahkan ke Layar Utama".';
+  function updInstall() {
+    const bisa = !terpasang() && (!!installEvt || isIOS);
+    ['hInstall', 'lInstall'].forEach(id => {
+      const el = $(id); el.classList.toggle('hidden', !bisa); el.classList.toggle('ios', isIOS && !installEvt);
+      if (isIOS && !installEvt) el.querySelector('.instTxt').textContent = IOS_TXT;
+    });
+    $('mInstall').classList.toggle('hidden', !bisa);
+  }
+  async function pasang() {
+    $('menu').classList.add('hidden');
+    if (installEvt) {
+      installEvt.prompt();
+      try { await installEvt.userChoice; } catch (e) {}
+      installEvt = null; updInstall();
+    } else if (isIOS) toast(IOS_TXT, 7000);
+  }
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; updInstall(); });
+  window.addEventListener('appinstalled', () => { installEvt = null; updInstall(); toast('Aplikasi terpasang di layar utama'); });
+  document.querySelectorAll('.instBtn').forEach(b => b.addEventListener('click', pasang));
+  $('mInstall').addEventListener('click', pasang);
+  updInstall();
 
   // ---------- pembaruan aplikasi (service worker) ----------
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {

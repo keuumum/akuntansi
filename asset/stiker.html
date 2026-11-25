@@ -428,9 +428,13 @@
   async function getStickerDataLokal(pin) {
     const info = bacaLS('inv-info') || {}, data = bacaLS('inv-data');
     if (!localStorage.getItem('inv-pin')) throw new Error('Buka aplikasi dan login dulu (NIP / PIN tim), lalu kembali ke sini.');
-    if (!info.stikerHash) throw new Error('Data PIN stiker belum ada di HP ini. Buka aplikasi sekali saat ada internet, lalu coba lagi.');
-    if (!pin) throw new Error('PIN_DIPERLUKAN');
-    if ((await sha256('invent-stiker|' + pin)) !== info.stikerHash) throw new Error('PIN_SALAH');
+    if (!info.stikerHash && !((bacaLS('inv-login') || {}).mode === 'nip')) throw new Error('Data PIN stiker belum ada di HP ini. Buka aplikasi sekali saat ada internet, lalu coba lagi.');
+    const lg = bacaLS('inv-login');
+    const loginNip = !!(lg && lg.mode === 'nip');           // login NIP pegawai -> tanpa PIN stiker
+    if (!loginNip) {
+      if (!pin) throw new Error('PIN_DIPERLUKAN');
+      if ((await sha256('invent-stiker|' + pin)) !== info.stikerHash) throw new Error('PIN_SALAH');
+    }
     if (!data || !Array.isArray(data.items)) throw new Error('Daftar aset belum dimuat di HP ini. Buka tab Bank Data saat ada internet, lalu coba lagi.');
     const items = data.items.filter(x => x[13]).map(x => ({
       code: String(x[0]), asset: x[1], sno: x[2] || '0', desc: x[3], loc: x[16] || x[4], lokasi: x[4], cc: x[7] || '', url: x[13], inData: true
