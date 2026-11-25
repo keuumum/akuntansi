@@ -15,8 +15,8 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="config.js?v=1.3.11250934"></script>
-<script src="api.js?v=1.3.11250934"></script>
+<script src="config.js?v=1.3.11250953"></script>
+<script src="api.js?v=1.3.11250953"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
@@ -75,7 +75,7 @@
   .aclist div.acNon { background:rgba(232,164,0,.08); }
   a { color:var(--brand); }
 </style>
-<link rel="stylesheet" href="app.css?v=1.3.11250934">
+<link rel="stylesheet" href="app.css?v=1.3.11250953">
 </head>
 <body>
 <header class="appbar">
@@ -324,12 +324,12 @@
 
 <div id="menu" class="hidden">
   <div class="ab" id="aboutTxt"></div>
-  <div class="ab" style="font-weight:700;color:var(--text)">Fitur lain <span style="font-weight:400">(segera)</span></div>
-  <button type="button" class="soonBtn">🏷️ Cetak stiker</button>
-  <button type="button" class="soonBtn">📍 Lapor temuan</button>
-  <button type="button" class="soonBtn">🔁 Mutasi lokasi</button>
-  <button type="button" class="soonBtn">🗺️ Peta aset</button>
-  <button type="button" class="soonBtn">✅ Tugas saya</button>
+  <div class="ab" style="font-weight:700;color:var(--text)">Fitur lain</div>
+  <button type="button" id="mStiker">🏷️ Cetak Stiker Inven 2026</button>
+  <button type="button" class="soonBtn">📍 Lapor temuan <small>(segera)</small></button>
+  <button type="button" class="soonBtn">🔁 Mutasi lokasi <small>(segera)</small></button>
+  <button type="button" class="soonBtn">🗺️ Peta aset <small>(segera)</small></button>
+  <button type="button" class="soonBtn">✅ Tugas saya <small>(segera)</small></button>
   <button id="mReload" type="button">⟳ Muat ulang data</button>
   <button id="mQueue" type="button">📤 Antrian offline</button>
   <button id="mInstall" type="button" class="hidden">📲 Pasang di layar utama</button>
@@ -1146,6 +1146,6 @@ window.addEventListener('load',function(){ window.Html5Qrcode ? start() : msg('L
   $('btnFind').addEventListener('click', doLookup);
   $('code').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doLookup(); } });
 </script>
-<script src="app.js?v=1.3.11250934"></script>
+<script src="app.js?v=1.3.11250953"></script>
 </body>
 </html>

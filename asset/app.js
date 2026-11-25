@@ -118,7 +118,13 @@
   $('hScan').addEventListener('click', () => openAppScanner('cari'));
   $('hAll').addEventListener('click', () => go('cari'));
   $('hRecent').addEventListener('click', e => { const it = e.target.closest('.it'); if (it) openDetail(it.dataset.c); });
-  document.querySelectorAll('#menu .soonBtn').forEach(b => b.addEventListener('click', () => { $('menu').classList.add('hidden'); toast(b.textContent.trim() + ': segera dibangun'); }));
+  // Cetak stiker: halaman stiker yang sudah ada (stiker.html di Apps Script), dibuka di tab yang sama, data tetap dikunci PIN stiker
+  $('mStiker').addEventListener('click', () => {
+    $('menu').classList.add('hidden');
+    if (navigator.onLine === false) { toast('Cetak stiker butuh internet'); return; }
+    location.href = String((window.CONFIG && CONFIG.API_URL) || '').replace(/\?.*$/, '') + '?page=stiker';
+  });
+  document.querySelectorAll('#menu .soonBtn').forEach(b => b.addEventListener('click', () => { $('menu').classList.add('hidden'); toast(b.textContent.replace('(segera)', '').trim() + ': segera dibangun'); }));
   document.querySelectorAll('#nav button').forEach(b => b.addEventListener('click', () => go(b.dataset.v)));
 
   // ---------- CARI ----------
